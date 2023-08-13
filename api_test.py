@@ -67,18 +67,26 @@ task = sg.find_one('Task',task_filter)
 pprint(shot)
 pprint(task)
 
-#Create a version
-ver_data = { 'project': {'type': 'Project','id': 122},
-         'code': '001_002_anim_v02',
-         'description': 'version from api',
-         'sg_path_to_frames': 'D:/test_seq/test_explosion_v012.mp4',
-         'sg_status_list': 'rev',
-         'entity': {'type': 'Shot', 'id': shot['id']},
-         'sg_task': {'type': 'Task', 'id': task['id']},
-         'user': {'type': 'HumanUser', 'id': 121} }
+# #Create a version
+# ver_data = { 'project': {'type': 'Project','id': 122},
+#          'code': '001_002_anim_v02',
+#          'description': 'version from api',
+#          'sg_path_to_frames': 'D:/test_seq/test_explosion_v012.mp4',
+#          'sg_status_list': 'rev',
+#          'entity': {'type': 'Shot', 'id': shot['id']},
+#          'sg_task': {'type': 'Task', 'id': task['id']},
+#          'user': {'type': 'HumanUser', 'id': 121} }
 
-result = sg.create('Version', ver_data)
-pprint(result)
+# result = sg.create('Version', ver_data)
+# pprint(result)
+
+
+# # Get shot codes and sequence status all in one query
+# project_name = 'glacier_test_project'
+# sg_shots = sg.find("Shot", [['project.Project.name', 'is', project_name]],
+#                    ['code', 'sg_sequence.Sequence.sg_status_list'])
+# pprint(sg_shots)
+
 
 # result = sg.schema_field_read('Asset', 'shots')
 # pprint(result)
