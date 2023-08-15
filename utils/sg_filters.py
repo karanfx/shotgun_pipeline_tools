@@ -14,7 +14,7 @@ shot_name = "001_001"
 #Get Codes and Ids
 #Get the Lists
 def list_project(sg):
-    proj_list = sg.find("Project", ['code'])
+    proj_list = sg.find("Project",[], ['name'])
     return proj_list
 
 def list_seq(sg,proj_name):
@@ -64,6 +64,11 @@ def get_task_id(sg,proj_name,shot_name,task):
 
     return task['id']
 
+def get_task_template_id(sg,template_name):
+    filters = [['code','is', template_name ]]
+    template = sg.find_one('TaskTemplate', filters)
+    return template
+
 def get_user_id(sg,username):
 
     user = sg.find_one("HumanUser", [["login", "is", username]], ["id"])
@@ -77,6 +82,17 @@ def get_task_full_id(sg,proj_name,seq_name,shot_name,task):
                 }
     return task_ids
 
+def get_tasks_by_artist(sg,username):
+    artist_id = get_user_id(sg,username)
+    task_filters = [["task_assignees", "in", {"type": "HumanUser", "id": artist_id}]]
+    task_fields = ["id", "content", "project", "entity", "sg_status"]
+    
+    assigned_tasks = sg.find("Task", task_filters, task_fields)
+
+    return assigned_tasks
+
+
+
 #Creating Shot and Seq
 def create_seq(sg,proj_name,seq_name,status,desp):
     proj_id = get_proj_id(sg,proj_name)
@@ -89,17 +105,34 @@ def create_seq(sg,proj_name,seq_name,status,desp):
     result = sg.create("Sequence",seq_data)
     print(result)
 
-def create_shot(sg,proj_name,seq_name,shot_name,status,desp):
+def create_task(sg,proj_name,shot_name,start_date,due_date,dept):
+    proj_id = get_proj_id(sg,proj_name)
+    shot_id = get_shot_id(sg,proj_name,shot_name)
+    data = {
+        'project': {'type':'Project', 'id':proj_id},
+        'content': dept,
+        'start_date': start_date,
+        'due_date': due_date,
+        'entity': {'type':'Shot', 'id':shot_id}
+        }
+    result = sg.create('Task', data)
+
+    return result
+
+
+def create_shot(sg,proj_name,seq_name,shot_name,status,template,desp):
     
     proj_id = get_proj_id(sg,proj_name)
     seq_id = get_seq_id(sg,proj_name,seq_name)
+    
 
     shot_data = {
     'project': {"type":"Project","id": proj_id},
     'sg_sequence': {"type":"Sequence","id": seq_id},
     'code': shot_name,
     'description': desp,
-    'sg_status_list': status
+    'sg_status_list': status,
+    'task_template': template
     }
     result = sg.create("Shot",shot_data)
     print(result)
@@ -122,21 +155,21 @@ def create_version(sg,ids,username,ver_name,vers_path,status,desc):
     result = sg.create('Version', ver_data)
     pprint(result)
 
+if __name__ == "__main__":
+    # create_seq(sg,proj_name,'seq_002','wtg','seq crated from API')
+    # create_shot(sg,proj_name,'seq_002','002_001','wtg','shot02 crated from API')
 
-# create_seq(sg,proj_name,'seq_002','wtg','seq crated from API')
-# create_shot(sg,proj_name,'seq_002','002_001','wtg','shot02 crated from API')
+    test = list_shot(sg,proj_name)
+    # test = list_project(sg)
+    # test = list_seq(sg,proj_name)
+    # create_version(sg,proj_name)
+    # test = get_shot_id(sg,proj_name,shot_name)
 
-# test = list_shot2(sg,proj_name)
-# test = list_project(sg)
-# test = list_seq(sg,proj_name)
-# create_version(sg,proj_name)
-# test = get_shot_id(sg,proj_name,shot_name)
+    # test = get_proj_id(sg,proj_name)
+    # test = get_seq_id(sg,proj_name,seq_name)
+    # test = get_task_id(sg,proj_name,shot_name,"FX")
+    # test = get_user_id(sg,"fedej32881@tipent.com")
+    # test = get_task_full_id(sg,proj_name,seq_name,shot_name,"FX")
 
-# test = get_proj_id(sg,proj_name)
-# test = get_seq_id(sg,proj_name,seq_name)
-# test = get_task_id(sg,proj_name,shot_name,"FX")
-# test = get_user_id(sg,"fedej32881@tipent.com")
-test = get_task_full_id(sg,proj_name,seq_name,shot_name,"FX")
-
-pprint(test)
-
+    # test = get_tasks_by_artist(sg,"ramesh.r")
+    pprint(test)
