@@ -1,6 +1,7 @@
 from typing import Optional
 from PySide6 import QtWidgets,QtGui
 import PySide6.QtCore
+import PySide6.QtGui
 import PySide6.QtWidgets
 import qdarkstyle
 import os
@@ -18,6 +19,8 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
     def __init__(self):
         super(sg_main,self).__init__()
         self.setupUi(self)
+        self.setWindowTitle("Glacier - Shotgun API Tool")
+        self.setWindowIcon(PySide6.QtGui.QIcon("D:\\Work\\python_dev\\QT_project_launcher\\bin\\logo\\favicon_sq_small.png"))
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api = 'PySide6'))
 
         #Call/Trigger functions
@@ -25,12 +28,15 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
 
         self.populate_proj()
         self.toolssetup()
+        
         # self.populate_task_by_artist()
 
         self.proj_lW.currentItemChanged.connect(self.populate_seq)
         self.proj_lW.currentItemChanged.connect(self.populate_task)
         self.task_treeWid.currentItemChanged.connect(self.setcur_task)
         self.Launch_PB.clicked.connect(self.opentool)
+
+        self.action_publish_version.triggered.connect(self.create_version)
 
     def populate_proj(self):
         self.proj_lW.clear()
@@ -111,7 +117,7 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         sel_task = [item.text(2) for item in sel_task]
         # sel_task = str(sel_task[2])
         print(sel_task)
-        task = 'Current Task :'+ str(sel_task)
+        task = 'Current Task :   '+ str(sel_task)
         self.sel_task_LB.setText(task)
 
     def toolssetup(self):
@@ -119,9 +125,7 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
                     "Blender" : "C:/Program Files/Blender Foundation/Blender 3.4/blender-launcher.exe",
                     "Unreal" : "C:/Program Files/Epic Games/UE_5.1/Engine/Binaries/Win64/UnrealEditor.exe",
                     "Discord" : "C:/Users/PERMAN/AppData/Local/Discord/Update.exe"}
-        self.soft_CB.addItems(tooldata)
-        
-        
+        self.soft_CB.addItems(tooldata)    
     
     def opentool(self):
         tooldata ={"Houdini": "C:/Program Files/Side Effects Software/Houdini 18.5.596/bin/houdinifx.exe",
@@ -132,6 +136,10 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         
         os.startfile(tooldata[toolname]) 
 
+    def create_version(self):
+        import utils.create_version 
+        vers_dlg = utils.create_version.create_version()
+        vers_dlg.exec()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication()
