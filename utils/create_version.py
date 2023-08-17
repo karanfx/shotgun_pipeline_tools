@@ -21,12 +21,16 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         self.setWindowIcon(PySide6.QtGui.QIcon("D:\\Work\\python_dev\\QT_project_launcher\\bin\\logo\\favicon_sq_small.png"))
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api = 'PySide6'))
 
-        self.populate_proj()
         self.Ok_Cancel_BBx.accepted.connect(self.publish_version)
+
+        self.populate_proj()
+        self.Proj_CBx.currentTextChanged.connect(self.populate_shot)
+        self.Shot_CBx.currentTextChanged.connect(self.populate_task)
         
     # def populate_project(self):
     #     prodirs = [ name for name in os.listdir(studio_dir) if os.path.isdir(os.path.join(studio_dir, name)) ]
     #     self.project_cB.addItems(prodirs)
+
     def populate_proj(self):
         self.Proj_CBx.clear()
         proj_id = sg_utils.list_project(sg)
@@ -40,7 +44,7 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         self.Shot_CBx.clear()
         proj_name = self.Proj_CBx.currentText()
   
-        seq = sg_utils.list_seq(sg,proj_name)
+        seq = sg_utils.list_all_shot(sg,proj_name)
         seq_list = []
         for s in seq:
             seq_list.append(s['code'])
@@ -51,24 +55,28 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
     def populate_task(self):
         self.task_CBx.clear()
         user_name = "ramesh.r"
-        proj_name = self.Proj_CBx.currentItem().text()
+        proj_name = self.Proj_CBx.currentText()
+        shot_name = self.Shot_CBx.currentText()
 
         #Alternate mathods 
         # proj_items = self.proj_lW.selectedItems()
         # proj_name = [item.text() for item in proj_items]
         # proj_name = str(proj_name[0])
         
-        shot = sg_utils.list_tasks(sg,proj_name,'001_001')
-        
+        shot = sg_utils.list_tasks(sg,proj_name,shot_name)
+        shot_list = []
         for s in shot:
             # print(s)
-            shot_list=[]
+            s_list=[]
             for k,v in s.items():
                 str(v)
                 # print(v)
-                shot_list.append(v)
-                
-            print(shot_list)
+                s_list.append(v)
+            
+            shot_list.append(s_list[2])
+        print(shot_list)
+        
+        self.task_CBx.addItems(shot_list)
             # item = QtWidgets.QTreeWidgetItem(list(shot_list))
             # self.task_treeWid.addTopLevelItem(item)
 

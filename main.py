@@ -32,7 +32,8 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         # self.populate_task_by_artist()
 
         self.proj_lW.currentItemChanged.connect(self.populate_seq)
-        self.proj_lW.currentItemChanged.connect(self.populate_task)
+        self.seq_lW.currentItemChanged.connect(self.populate_shot)
+        self.Shot_LW.currentItemChanged.connect(self.populate_task)
         self.task_treeWid.currentItemChanged.connect(self.setcur_task)
         self.Launch_PB.clicked.connect(self.opentool)
 
@@ -59,17 +60,31 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
 
         self.seq_lW.addItems(seq_list)
 
+    def populate_shot(self):
+        self.Shot_LW.clear()
+        proj_name = self.proj_lW.currentItem().text()
+        seq_name = self.seq_lW.currentItem().text()
+  
+        seq = sg_utils.list_shot(sg,proj_name,seq_name)
+        shot_list = []
+        for s in seq:
+            shot_list.append(s['code'])
+        # print(shot_list)
+
+        self.Shot_LW.addItems(shot_list)
+
     def populate_task(self):
         self.task_treeWid.clear()
         user_name = self.user_LE.text()
         proj_name = self.proj_lW.currentItem().text()
+        shot_name = self.Shot_LW.currentItem().text()
 
         #Alternate mathods 
         # proj_items = self.proj_lW.selectedItems()
         # proj_name = [item.text() for item in proj_items]
         # proj_name = str(proj_name[0])
         
-        shot = sg_utils.list_tasks(sg,proj_name,'001_001')
+        shot = sg_utils.list_tasks(sg,proj_name,shot_name)
         
         for s in shot:
             # print(s)
@@ -79,7 +94,12 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
                 # print(v)
                 shot_list.append(v)
                 
+            #Format Task List
+            shot_list.pop(0)
+            shot_list.insert(0,shot_list[1])
+            shot_list.pop(1)
             print(shot_list)
+
             item = QtWidgets.QTreeWidgetItem(list(shot_list))
             self.task_treeWid.addTopLevelItem(item)
 
@@ -114,7 +134,7 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
     def setcur_task(self):
         # sel_task = self.task_treeWid.currentItem()
         sel_task = self.task_treeWid.selectedItems()
-        sel_task = [item.text(2) for item in sel_task]
+        sel_task = [item.text(0) for item in sel_task]
         # sel_task = str(sel_task[2])
         print(sel_task)
         task = 'Current Task :   '+ str(sel_task)

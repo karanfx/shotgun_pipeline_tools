@@ -21,8 +21,13 @@ def list_seq(sg,proj_name):
     sg_shots = sg.find("Sequence", [['project.Project.name', 'is', proj_name]], ['code'])
     return sg_shots
 
-def list_shot(sg,proj_name):
+def list_all_shot(sg,proj_name):
     sg_shots = sg.find("Shot", [['project.Project.name', 'is', proj_name]], ['code'])
+    return sg_shots
+
+def list_shot(sg,proj_name,seq_name):
+    filters = [['project.Project.name', 'is', proj_name],["sg_sequence.Sequence.code", "is", seq_name]]
+    sg_shots = sg.find("Shot", filters, ['code'])
     return sg_shots
 
 def list_shot2(sg,proj_name):
@@ -33,7 +38,7 @@ def list_shot2(sg,proj_name):
 
 def list_tasks(sg,proj_name,shot_name):
     shot_id = get_shot_id(sg,proj_name,shot_name)
-    task_filter = [['project.Project.name', 'is', proj_name] ]
+    task_filter = [['project.Project.name', 'is', proj_name],["entity.Shot.code", "is", shot_name] ]
     fields = ['content','code','sg_status_list','description',
               'start_date','due_date','duration','dependent_task_id','task_id']
     tasks = sg.find("Task",task_filter,fields)
@@ -168,7 +173,7 @@ if __name__ == "__main__":
     # create_seq(sg,proj_name,'seq_002','wtg','seq crated from API')
     # create_shot(sg,proj_name,'seq_002','002_001','wtg','shot02 crated from API')
 
-    # test = list_shot(sg,proj_name)
+    # test = list_shot(sg,proj_name,seq_name)
     # test = list_project(sg)
     # test = list_seq(sg,proj_name)
     # create_version(sg,proj_name)
@@ -182,8 +187,8 @@ if __name__ == "__main__":
 
     # test = get_tasks_by_artist(sg,"ramesh.r")
     # test = create_task(sg,proj_name,'001_002','2023-08-16','2023-08-20','FX')
-    # test = list_tasks(sg,proj_name,shot_name)
+    test = list_tasks(sg,proj_name,shot_name)
     # test = sg.schema_entity_read({'type': 'Project', 'id': 122})
-    test = sg.schema_read({'type': 'Project', 'id': 122})
+    # test = sg.schema_read({'type': 'Project', 'id': 122})
     pprint(test)
     

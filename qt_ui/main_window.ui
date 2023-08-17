@@ -109,7 +109,7 @@
       <widget class="QListWidget" name="seq_lW">
        <item>
         <property name="text">
-         <string>Seq_000</string>
+         <string>Select Show</string>
         </property>
        </item>
       </widget>
@@ -195,7 +195,7 @@
        </column>
        <item>
         <property name="text">
-         <string>Reload_Tasks</string>
+         <string>Select Shot</string>
         </property>
        </item>
       </widget>
@@ -262,7 +262,7 @@
       <widget class="QListWidget" name="Shot_LW">
        <item>
         <property name="text">
-         <string>001_001</string>
+         <string>Select Sequence</string>
         </property>
        </item>
       </widget>
