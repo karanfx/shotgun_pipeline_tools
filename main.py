@@ -37,7 +37,9 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         self.task_treeWid.currentItemChanged.connect(self.setcur_task)
         self.Launch_PB.clicked.connect(self.opentool)
 
+        # Config Action buttions
         self.action_publish_version.triggered.connect(self.create_version)
+        self.action_publish_assets.triggered.connect(self.publish_asset)
 
     def populate_proj(self):
         self.proj_lW.clear()
@@ -135,9 +137,8 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         # sel_task = self.task_treeWid.currentItem()
         sel_task = self.task_treeWid.selectedItems()
         sel_task = [item.text(0) for item in sel_task]
-        # sel_task = str(sel_task[2])
         print(sel_task)
-        task = 'Current Task :   '+ str(sel_task)
+        task = 'Current Task :   '+ str(sel_task[0])
         self.sel_task_LB.setText(task)
 
     def toolssetup(self):
@@ -159,6 +160,11 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
     def create_version(self):
         import utils.create_version 
         vers_dlg = utils.create_version.create_version()
+        vers_dlg.exec()
+
+    def publish_asset(self):
+        import utils.publish_asset 
+        vers_dlg = utils.publish_asset.publish_asset()
         vers_dlg.exec()
 
 if __name__ == "__main__":

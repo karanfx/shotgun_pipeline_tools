@@ -163,7 +163,7 @@ def create_version(sg,ids,username,ver_name,vers_path,status,desc):
              'sg_path_to_frames': vers_path,
              'sg_status_list': status,
              'entity': {'type': 'Shot', 'id': ids['Shot']},
-             'sg_task': {'type': 'Task', 'id': ids['task']},
+             'sg_task': {'type': 'Task', 'id': ids['Task']},
              'user': {'type': 'HumanUser', 'id': user_id} }
 
     result = sg.create('Version', ver_data)

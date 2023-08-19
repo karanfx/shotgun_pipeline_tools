@@ -6,36 +6,34 @@ import os
 import json
 import shotgun_api3.shotgun as SG
 
-
-
-
-
 import utils.sg_filters as sg_utils
-import ui.create_version_ui_ui
+import ui.publish_asset_ui_ui
 
 sg = SG.Shotgun('https://testvfx.shotgrid.autodesk.com', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')
 
 
 #Email Form
-class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
+class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
     def __init__(self):
-        super(create_version,self).__init__()
+        super(publish_asset,self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Glacier - Publish Version")
         self.setWindowIcon(PySide6.QtGui.QIcon("D:\\Work\\python_dev\\QT_project_launcher\\bin\\logo\\favicon_sq_small.png"))
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api = 'PySide6'))
 
+        self.Ok_Cancel_BBx.accepted.connect(self.publish_version)
+
         # Populate Data
         self.populate_proj()
         self.Proj_CBx.currentTextChanged.connect(self.populate_shot)
-        self.Shot_CBx.currentTextChanged.connect(self.populate_task)
+        self.Asset_CBx.currentTextChanged.connect(self.populate_task)
         
         # Update version name
         self.Proj_CBx.currentTextChanged.connect(self.set_vers_name)
-        self.Shot_CBx.currentTextChanged.connect(self.set_vers_name)
-        self.task_CBx.currentTextChanged.connect(self.set_vers_name)
+        self.Asset_CBx.currentTextChanged.connect(self.set_vers_name)
+        self.asset_type_CBx.currentTextChanged.connect(self.set_vers_name)
 
-        self.vers_TB.clicked.connect(self.manual_dir)
+        self.asset_path_TB.clicked.connect(self.manual_dir)
         
         #Update publish button
         ok_button = self.Ok_Cancel_BBx.button(QtWidgets.QDialogButtonBox.Save)
@@ -53,7 +51,7 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         self.Proj_CBx.addItems(proj_name)
 
     def populate_shot(self):
-        self.Shot_CBx.clear()
+        self.Asset_CBx.clear()
         proj_name = self.Proj_CBx.currentText()
   
         seq = sg_utils.list_all_shot(sg,proj_name)
@@ -62,13 +60,13 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
             seq_list.append(s['code'])
         # print(seq_list)
 
-        self.Shot_CBx.addItems(seq_list)
+        self.Asset_CBx.addItems(seq_list)
 
     def populate_task(self):
-        self.task_CBx.clear()
+        self.asset_type_CBx.clear()
         user_name = "ramesh.r"
         proj_name = self.Proj_CBx.currentText()
-        shot_name = self.Shot_CBx.currentText()
+        shot_name = self.Asset_CBx.currentText()
 
         #Alternate mathods 
         # proj_items = self.proj_lW.selectedItems()
@@ -88,7 +86,7 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
             shot_list.append(s_list[2])
         print(shot_list)
         
-        self.task_CBx.addItems(shot_list)
+        self.asset_type_CBx.addItems(shot_list)
             # item = QtWidgets.QTreeWidgetItem(list(shot_list))
             # self.task_treeWid.addTopLevelItem(item)
 
@@ -124,36 +122,33 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
     def publish_version(self):
 
         cur_proj = self.Proj_CBx.currentText()
-        cur_shot = self.Shot_CBx.currentText()
-        cur_task = self.task_CBx.currentText()
-        cur_seq = sg_utils.get_seq_id(sg,cur_proj,"seq_002")
-        print(cur_seq)
+        cur_shot = self.Asset_CBx.currentText()
+        cur_task = self.asset_type_CBx.currentText()
 
-        vers_path = self.vers_LE.text()
-        vers_name = self.Ver_name_LE.text()
+        vers_path = self.asset_path_LE.text()
+        vers_name = self.asset_name_LE.text()
         vers_desc = self.desc_TE.toPlainText()
 
         username = "ramesh.r"
         status = "rev"
 
-        print('Pubished')
+        print('Published')
         # import utils.sg_filters as filter
-        ids = sg_utils.get_task_full_id(sg,cur_proj,"seq_002",cur_shot,cur_task)
-        print(ids)
-        sg_utils.create_version(sg,ids,username,vers_name,vers_path,status,vers_desc)
+        # ids = filter.get_task_full_id(sg,cur_proj,"",cur_shot,cur_task)
+        # filter.create_version(sg,ids,username,vers_name,vers_path,status,vers_desc)
 
 
     def manual_dir(self):
         man_path,ext = QtWidgets.QFileDialog.getOpenFileName(self,'Select Folder')
         if man_path:
-            self.vers_LE.setText(man_path)
+            self.asset_path_LE.setText(man_path)
 
         if not man_path:
             QtWidgets.QMessageBox.about(self,"Path Required","Please, pick the path")
 
     def set_vers_name(self):
-        shot = self.Shot_CBx.currentText()
-        task = self.task_CBx.currentText()
+        shot = self.Asset_CBx.currentText()
+        task = self.asset_type_CBx.currentText()
         vers = 'v001'
 
-        self.Ver_name_LE.setText(shot + '_' + task + '_' + vers)
+        self.asset_name_LE.setText(shot + '_' + task + '_' + vers)

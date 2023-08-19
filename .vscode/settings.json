@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "c:\\Users\\PERMAN\\.vscode\\extensions\\fxtd-odyssey.mayapy-1.0.4\\mayaSDK",
+        "./ui"
+    ]
+}

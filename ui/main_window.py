@@ -212,7 +212,7 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.seq_lW.isSortingEnabled()
         self.seq_lW.setSortingEnabled(False)
         ___qlistwidgetitem = self.seq_lW.item(0)
-        ___qlistwidgetitem.setText(QCoreApplication.translate("MainWindow", u"Seq_000", None));
+        ___qlistwidgetitem.setText(QCoreApplication.translate("MainWindow", u"Select Show", None));
         self.seq_lW.setSortingEnabled(__sortingEnabled)
 
         self.proj_LB.setText(QCoreApplication.translate("MainWindow", u"Show/Project :", None))
@@ -235,7 +235,7 @@ class Ui_MainWindow(object):
         __sortingEnabled2 = self.task_treeWid.isSortingEnabled()
         self.task_treeWid.setSortingEnabled(False)
         ___qtreewidgetitem1 = self.task_treeWid.topLevelItem(0)
-        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"Reload_Tasks", None));
+        ___qtreewidgetitem1.setText(0, QCoreApplication.translate("MainWindow", u"Select Shot", None));
         self.task_treeWid.setSortingEnabled(__sortingEnabled2)
 
         self.sel_task_LB.setText(QCoreApplication.translate("MainWindow", u"Selected Task :", None))
@@ -246,7 +246,7 @@ class Ui_MainWindow(object):
         __sortingEnabled3 = self.Shot_LW.isSortingEnabled()
         self.Shot_LW.setSortingEnabled(False)
         ___qlistwidgetitem2 = self.Shot_LW.item(0)
-        ___qlistwidgetitem2.setText(QCoreApplication.translate("MainWindow", u"001_001", None));
+        ___qlistwidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Select Sequence", None));
         self.Shot_LW.setSortingEnabled(__sortingEnabled3)
 
         self.Reload_PB.setText(QCoreApplication.translate("MainWindow", u"Reload Tasks", None))

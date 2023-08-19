@@ -73,3 +73,5 @@ if __name__ == "__main__":
     player = VideoPlayer()
     player.show()
     sys.exit(app.exec_())
+
+
