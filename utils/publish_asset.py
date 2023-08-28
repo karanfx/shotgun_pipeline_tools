@@ -21,11 +21,10 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         self.setWindowIcon(PySide6.QtGui.QIcon("D:\\Work\\python_dev\\QT_project_launcher\\bin\\logo\\favicon_sq_small.png"))
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api = 'PySide6'))
 
-        self.Ok_Cancel_BBx.accepted.connect(self.publish_version)
 
         # Populate Data
         self.populate_proj()
-        self.Proj_CBx.currentTextChanged.connect(self.populate_shot)
+        self.Proj_CBx.currentTextChanged.connect(self.populate_asset)
         self.Asset_CBx.currentTextChanged.connect(self.populate_task)
         
         # Update version name
@@ -38,7 +37,7 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         #Update publish button
         ok_button = self.Ok_Cancel_BBx.button(QtWidgets.QDialogButtonBox.Save)
         ok_button.setText("Publish")
-        self.Ok_Cancel_BBx.accepted.connect(self.publish_version)
+        self.Ok_Cancel_BBx.accepted.connect(self.publish_asset)
         
 
     def populate_proj(self):
@@ -50,11 +49,12 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
 
         self.Proj_CBx.addItems(proj_name)
 
-    def populate_shot(self):
+    def populate_asset(self):
         self.Asset_CBx.clear()
         proj_name = self.Proj_CBx.currentText()
   
-        seq = sg_utils.list_all_shot(sg,proj_name)
+        # seq = sg_utils.list_all_shot(sg,proj_name)
+        seq = sg_utils.list_assets(sg,proj_name)
         seq_list = []
         for s in seq:
             seq_list.append(s['code'])
@@ -73,7 +73,7 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         # proj_name = [item.text() for item in proj_items]
         # proj_name = str(proj_name[0])
         
-        shot = sg_utils.list_tasks(sg,proj_name,shot_name)
+        shot = sg_utils.list_asset_tasks(sg,proj_name,shot_name)
         shot_list = []
         for s in shot:
             # print(s)
@@ -87,42 +87,13 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         print(shot_list)
         
         self.asset_type_CBx.addItems(shot_list)
-            # item = QtWidgets.QTreeWidgetItem(list(shot_list))
-            # self.task_treeWid.addTopLevelItem(item)
-
-    # def populate_task_by_artist(self):
-    #     self.task_treeWid.clear()
-    #     user_name = 'ramesh.r'
-    #     # user_name = self.user_LE.text()
-        
-    #     # proj_items = self.proj_lW.selectedItems()
-        
-    #     # proj_name = [item.text() for item in proj_items]
-    #     # proj_name = str(proj_name[0])
-        
-    #     # shot = sg_utils.list_tasks(sg,proj_name,'001_001')
-    #     task = sg_utils.get_tasks_by_artist(sg,user_name)
-        
-    #     # for s in task:
-    #     #     print(s)
-    #     #     shot_list=[]
-    #     #     for k,v in s.items():
-    #     #         str(v)
-    #     #         # print(v)
-    #     #         shot_list.append(v)
-                
-    #     #     # print(shot_list)
-    #     #     item = QtWidgets.QTreeWidgetItem(list(shot_list))
-    #     #     self.task_treeWid.addTopLevelItem(item)
-    #     print(task)
-    #     item = QtWidgets.QTreeWidgetItem(list(task))
-    #     self.task_treeWid.addTopLevelItem(item)
+       
 
 
-    def publish_version(self):
+    def publish_asset(self):
 
         cur_proj = self.Proj_CBx.currentText()
-        cur_shot = self.Asset_CBx.currentText()
+        cur_asset = self.Asset_CBx.currentText()
         cur_task = self.asset_type_CBx.currentText()
 
         vers_path = self.asset_path_LE.text()
@@ -131,6 +102,7 @@ class publish_asset(ui.publish_asset_ui_ui.Ui_Dialog,QtWidgets.QDialog):
 
         username = "ramesh.r"
         status = "rev"
+        sg_utils.create_asset(sg,cur_proj,cur_asset,cur_task,username,vers_name,vers_path,status,vers_desc)
 
         print('Published')
         # import utils.sg_filters as filter

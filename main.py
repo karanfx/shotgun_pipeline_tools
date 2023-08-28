@@ -34,7 +34,7 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         self.proj_lW.currentItemChanged.connect(self.populate_seq)
         self.seq_lW.currentItemChanged.connect(self.populate_shot)
         self.Shot_LW.currentItemChanged.connect(self.populate_task)
-        self.task_treeWid.currentItemChanged.connect(self.setcur_task)
+        self.task_treeWid.itemSelectionChanged.connect(self.setcur_task)
         self.Launch_PB.clicked.connect(self.opentool)
 
         # Config Action buttions
@@ -134,7 +134,7 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         self.task_treeWid.addTopLevelItem(item)
 
     def setcur_task(self):
-        # sel_task = self.task_treeWid.currentItem()
+        # sel_task = self.task_treeWid.currentItem().text()
         sel_task = self.task_treeWid.selectedItems()
         sel_task = [item.text(0) for item in sel_task]
         print(sel_task)

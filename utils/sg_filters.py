@@ -36,6 +36,19 @@ def list_shot2(sg,proj_name):
                     ['code', 'sg_sequence.Sequence.sg_status_list'])
     return sg_shots
 
+def list_assets(sg,proj_name):
+    sg_shots = sg.find("Asset", [['project.Project.name', 'is', proj_name]], ['code'])
+    return sg_shots
+
+def list_asset_tasks(sg,proj_name,asset_name):
+    shot_id = get_asset_id(sg,proj_name,asset_name)
+    task_filter = [['project.Project.name', 'is', proj_name],["entity.Asset.code", "is", asset_name] ]
+    fields = ['content','code','sg_status_list','description',
+              'start_date','due_date','duration','dependent_task_id','task_id']
+    tasks = sg.find("Task",task_filter,fields)
+
+    return tasks
+
 def list_tasks(sg,proj_name,shot_name):
     shot_id = get_shot_id(sg,proj_name,shot_name)
     task_filter = [['project.Project.name', 'is', proj_name],["entity.Shot.code", "is", shot_name] ]
@@ -68,12 +81,30 @@ def get_shot_id(sg,proj_name,shot_name):
 
     return shot['id']
 
+def get_asset_id(sg,proj_name,shot_name):
+    shot_filters = [["code", "is", shot_name],
+                    ['project.Project.name', 'is', proj_name]]
+    shot = sg.find_one("Asset",shot_filters)
+
+    return shot['id']
+
 def get_task_id(sg,proj_name,shot_name,task):
     proj_id = get_proj_id(sg,proj_name)
     shot_id = get_shot_id(sg,proj_name,shot_name)
 
     filters = [ ['project', 'is', {'type': 'Project', 'id': proj_id}],
             ['entity', 'is',{'type':'Shot', 'id': shot_id}],
+            ['content', 'is', task] ]
+    task = sg.find_one('Task', filters)
+
+    return task['id']
+
+def get_asset_task_id(sg,proj_name,asset_name,task):
+    proj_id = get_proj_id(sg,proj_name)
+    asset_id = get_asset_id(sg,proj_name,asset_name)
+
+    filters = [ ['project', 'is', {'type': 'Project', 'id': proj_id}],
+            ['entity', 'is',{'type':'Shot', 'id': asset_id}],
             ['content', 'is', task] ]
     task = sg.find_one('Task', filters)
 
@@ -169,6 +200,27 @@ def create_version(sg,ids,username,ver_name,vers_path,status,desc):
     result = sg.create('Version', ver_data)
     pprint(result)
 
+def create_asset(sg,proj_name,asset_name,task,username,ver_name,vers_path,status,desc):
+    proj_id = get_proj_id(sg,proj_name)
+    asset_id = get_asset_id(sg,proj_name,asset_name)
+    task_id = get_asset_task_id(sg,proj_name,asset_name,task)
+    # ids = get_task_full_id(sg,proj_name,seq_name,shot_name,task)
+    user_id = get_user_id(sg,username)
+
+    #Create a version
+    ver_data = { 'project': {'type': 'Project','id': proj_id},
+                "entity": {"type": "Asset", "id": asset_id},
+             'code': ver_name,
+             'description': desc,
+             'sg_path_to_frames': vers_path,
+             'sg_status_list': status,
+             'sg_task': {'type': 'Task', 'id': task_id},
+             'user': {'type': 'HumanUser', 'id': user_id} }
+
+    result = sg.create('Version', ver_data)
+    pprint(result)
+
+
 if __name__ == "__main__":
     # create_seq(sg,proj_name,'seq_002','wtg','seq crated from API')
     # create_shot(sg,proj_name,'seq_002','002_001','wtg','shot02 crated from API')
@@ -176,6 +228,7 @@ if __name__ == "__main__":
     # test = list_shot(sg,proj_name,seq_name)
     # test = list_project(sg)
     # test = list_seq(sg,proj_name)
+    test = list_assets(sg,proj_name)
     # create_version(sg,proj_name)
     # test = get_shot_id(sg,proj_name,shot_name)
 
@@ -187,7 +240,7 @@ if __name__ == "__main__":
 
     # test = get_tasks_by_artist(sg,"ramesh.r")
     # test = create_task(sg,proj_name,'001_002','2023-08-16','2023-08-20','FX')
-    test = list_tasks(sg,proj_name,shot_name)
+    # test = list_tasks(sg,proj_name,shot_name)
     # test = sg.schema_entity_read({'type': 'Project', 'id': 122})
     # test = sg.schema_read({'type': 'Project', 'id': 122})
     pprint(test)
