@@ -1,5 +1,0 @@
-fedej32881@tipent.com
-
-SGapi@51test
-
-SG.Shotgun('https://testvfx.shotgrid.autodesk.com ', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')

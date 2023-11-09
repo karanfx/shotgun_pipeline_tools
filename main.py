@@ -12,7 +12,26 @@ import ui.main_window
 import utils.sg_filters as sg_utils
 
 #API KEY
-sg = SG.Shotgun('https://testvfx.shotgrid.autodesk.com', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')
+cred_file = "E:/Work/python_dev/Glacier_shotgun_Tools/creds/key.json"
+
+with open(cred_file,'r') as cred:
+    creds = json.load(cred)
+
+SERVER = creds.get('SERVER_PATH')
+SCRIPT_NAME = creds.get('SCRIPT_NAME')
+API_KEY = creds.get('SCRIPT_KEY')
+
+sg = SG.Shotgun(SERVER, SCRIPT_NAME, API_KEY)
+
+#GET DCC INFO
+import json
+user_data = "data\dcc_path.json"
+
+with open(user_data,'r') as file:
+    dcc = json.load(file)
+
+tooldata = dcc.get('tools')
+
 
 
 class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
@@ -142,17 +161,9 @@ class sg_main(ui.main_window.Ui_MainWindow,QtWidgets.QMainWindow):
         self.sel_task_LB.setText(task)
 
     def toolssetup(self):
-        tooldata ={"Houdini": "C:/Program Files/Side Effects Software/Houdini 18.5.596/bin/houdinifx.exe",
-                    "Blender" : "C:/Program Files/Blender Foundation/Blender 3.4/blender-launcher.exe",
-                    "Unreal" : "C:/Program Files/Epic Games/UE_5.1/Engine/Binaries/Win64/UnrealEditor.exe",
-                    "Discord" : "C:/Users/PERMAN/AppData/Local/Discord/Update.exe"}
         self.soft_CB.addItems(tooldata)    
     
     def opentool(self):
-        tooldata ={"Houdini": "C:/Program Files/Side Effects Software/Houdini 18.5.596/bin/houdinifx.exe",
-                    "Blender" : "C:/Program Files/Blender Foundation/Blender 3.4/blender-launcher.exe",
-                    "Unreal" : "C:/Program Files/Epic Games/UE_5.1/Engine/Binaries/Win64/UnrealEditor.exe",
-                    "Discord" : "C:/Users/PERMAN/AppData/Local/Discord/Update.exe"}
         toolname = self.soft_CB.currentText()
         
         os.startfile(tooldata[toolname]) 

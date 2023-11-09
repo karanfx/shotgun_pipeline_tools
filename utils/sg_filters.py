@@ -137,7 +137,12 @@ def get_tasks_by_artist(sg,username):
 
     return assigned_tasks
 
-
+def update_task_status(task_id, new_status):
+        task_data = {
+            "sg_status_list": new_status
+        }
+        sg.update("Task", task_id, task_data)
+        
 
 #Creating Shot and Seq
 def create_seq(sg,proj_name,seq_name,status,desp):
