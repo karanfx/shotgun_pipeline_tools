@@ -1,13 +1,25 @@
 import shotgun_api3.shotgun as SG
 from pprint import pprint
 import os
+import json
 
 #SG instance with API KEY
 #test variables
-sg = SG.Shotgun('https://testvfx.shotgrid.autodesk.com', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')
 
+#API KEY
+cred_file = "E:/Work/python_dev/Glacier_shotgun_Tools/creds/key.json"
+
+with open(cred_file,'r') as cred:
+    creds = json.load(cred)
+
+SERVER = creds.get('SERVER_PATH')
+SCRIPT_NAME = creds.get('SCRIPT_NAME')
+API_KEY = creds.get('SCRIPT_KEY')
+
+sg = SG.Shotgun(SERVER, SCRIPT_NAME, API_KEY)
+
+#TEST DATA
 proj_name = "glacier_test_project"
-
 seq_name = "seq_001"
 shot_name = "001_001"
 
@@ -121,8 +133,14 @@ def get_user_id(sg,username):
     return user["id"]
 
 def get_task_full_id(sg,proj_name,seq_name,shot_name,task):
+    
+    if seq_name == None:
+        seq = None
+    else:
+        seq = get_seq_id(sg,proj_name,seq_name)
+    
     task_ids = {'Project':get_proj_id(sg,proj_name),
-                'Sequence':get_seq_id(sg,proj_name,seq_name),
+                'Sequence':seq,
                 'Shot':get_shot_id(sg,proj_name,shot_name),
                 'Task':get_task_id(sg,proj_name,shot_name,task)
                 }
@@ -233,12 +251,12 @@ if __name__ == "__main__":
     # test = list_shot(sg,proj_name,seq_name)
     # test = list_project(sg)
     # test = list_seq(sg,proj_name)
-    test = list_assets(sg,proj_name)
+    # test = list_assets(sg,proj_name)
     # create_version(sg,proj_name)
     # test = get_shot_id(sg,proj_name,shot_name)
 
     # test = get_proj_id(sg,proj_name)
-    # test = get_seq_id(sg,proj_name,seq_name)
+    test = get_seq_id(sg,proj_name,seq_name)
     # test = get_task_id(sg,proj_name,shot_name,"FX")
     # test = get_user_id(sg,"fedej32881@tipent.com")
     # test = get_task_full_id(sg,proj_name,seq_name,shot_name,"FX")
@@ -248,5 +266,5 @@ if __name__ == "__main__":
     # test = list_tasks(sg,proj_name,shot_name)
     # test = sg.schema_entity_read({'type': 'Project', 'id': 122})
     # test = sg.schema_read({'type': 'Project', 'id': 122})
-    pprint(test)
+    # pprint(test)
     

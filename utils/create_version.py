@@ -7,13 +7,21 @@ import json
 import shotgun_api3.shotgun as SG
 
 
-
-
-
 import utils.sg_filters as sg_utils
 import ui.create_version_ui_ui
 
-sg = SG.Shotgun('https://testvfx.shotgrid.autodesk.com', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')
+
+#API KEY
+cred_file = "E:/Work/python_dev/Glacier_shotgun_Tools/creds/key.json"
+
+with open(cred_file,'r') as cred:
+    creds = json.load(cred)
+
+SERVER = creds.get('SERVER_PATH')
+SCRIPT_NAME = creds.get('SCRIPT_NAME')
+API_KEY = creds.get('SCRIPT_KEY')
+
+sg = SG.Shotgun(SERVER, SCRIPT_NAME, API_KEY)
 
 
 #Email Form
@@ -126,21 +134,22 @@ class create_version(ui.create_version_ui_ui.Ui_Dialog,QtWidgets.QDialog):
         cur_proj = self.Proj_CBx.currentText()
         cur_shot = self.Shot_CBx.currentText()
         cur_task = self.task_CBx.currentText()
-        cur_seq = sg_utils.get_seq_id(sg,cur_proj,"seq_002")
-        print(cur_seq)
+        # cur_seq = sg_utils.get_seq_id(sg,cur_proj,"seq_002")
+        # print(cur_seq)
 
         vers_path = self.vers_LE.text()
         vers_name = self.Ver_name_LE.text()
         vers_desc = self.desc_TE.toPlainText()
 
-        username = "ramesh.r"
+        username = "tezz.y"
         status = "rev"
 
-        print('Pubished')
         # import utils.sg_filters as filter
-        ids = sg_utils.get_task_full_id(sg,cur_proj,"seq_002",cur_shot,cur_task)
-        print(ids)
+        ids = sg_utils.get_task_full_id(sg,cur_proj,None,cur_shot,cur_task)
+        # print(ids)
         sg_utils.create_version(sg,ids,username,vers_name,vers_path,status,vers_desc)
+
+        print('Pubished')
 
 
     def manual_dir(self):

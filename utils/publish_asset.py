@@ -9,7 +9,18 @@ import shotgun_api3.shotgun as SG
 import utils.sg_filters as sg_utils
 import ui.publish_asset_ui_ui
 
-sg = SG.Shotgun('https://testvfx.shotgrid.autodesk.com', 'testscript', 'byjzbl-abBmd3ohtpebhjkadu')
+
+#API KEY
+cred_file = "E:/Work/python_dev/Glacier_shotgun_Tools/creds/key.json"
+
+with open(cred_file,'r') as cred:
+    creds = json.load(cred)
+
+SERVER = creds.get('SERVER_PATH')
+SCRIPT_NAME = creds.get('SCRIPT_NAME')
+API_KEY = creds.get('SCRIPT_KEY')
+
+sg = SG.Shotgun(SERVER, SCRIPT_NAME, API_KEY)
 
 
 #Email Form
