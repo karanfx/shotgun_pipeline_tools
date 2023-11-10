@@ -11,17 +11,9 @@ import shotgun_api3.shotgun as SG
 import ui.main_window
 import utils.sg_filters as sg_utils
 
-#API KEY
-cred_file = "E:/Work/python_dev/Glacier_shotgun_Tools/creds/key.json"
-
-with open(cred_file,'r') as cred:
-    creds = json.load(cred)
-
-SERVER = creds.get('SERVER_PATH')
-SCRIPT_NAME = creds.get('SCRIPT_NAME')
-API_KEY = creds.get('SCRIPT_KEY')
-
-sg = SG.Shotgun(SERVER, SCRIPT_NAME, API_KEY)
+# API KEY
+from data.import_creds import SG_CRED
+sg = SG_CRED()
 
 #GET DCC INFO
 import json
